@@ -1,0 +1,474 @@
+﻿@model District_Master_Excise.Models.clsMasterDistrict
+@{
+    ViewBag.Title = "DataTable";
+
+}
+<html>
+<head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link href="~/assets/plugins/timepicker/tempusdominus-bootstrap-4.css" rel="stylesheet">
+    <link href="~/assets/css/bootstrap.min.css" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" type="text/css" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+    <script type="text/javascript" language="javascript" src="//code.jquery.com/jquery-1.12.3.min.js">
+    </script>
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.12/css/dataTables.jqueryui.min.css">
+    <script type="text/javascript" language="javascript" src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js">
+    </script>
+    <script type="text/javascript" language="javascript" src="https://cdn.datatables.net/1.10.12/js/dataTables.jqueryui.min.js">
+    </script>
+         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js" integrity="sha512-AA1Bzp5Q0K1KanKKmvN/4d3IRKVlv9PYgwFPvm32nPO6QS8yH1HO7LbgB1pgiOxPtfeg5zEn2ba64MUcqJx6CA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+</head>
+<body>
+    @using (Html.BeginForm())
+    {
+        @Html.HiddenFor(model => model.ViewEditStatus, new { id = "hdnViewEditStatus" })
+
+        <button type="button" class="btn btn-primary float right" id="newbutton" value="New +">New</button>
+        <div class="card">
+            <div class="card-body">
+                <div class="container-fluid">
+                    <div class="table-responsive">
+                        @*<table style="width:100%!important" id="grdWorkFlowView" class="table table-striped table-bordered table-hover">*@
+                        <table id="grdWorkFlowView" cellpadding="0" cellspacing="0" border="1" style="border-collapse:collapse">
+                            <thead>
+                                <tr style="text-align: center;">
+                                    <th style="text-align: center"> Serial.NO</th>
+                                    <th style="text-align: center">Country Name</th>
+                                    <th style="text-align: center">State Name</th>
+                                    <th style="text-align:center">Zone Name</th>
+                                    <th style="text-align:center">District Name</th>
+                                    <th style="text-align: center">DstID</th>
+                                    <th style="text-align: center">dstCountryId</th>
+                                    <th style="text-align: center">dstStateId</th>
+                                    <th style="text-align: center">dstZoneId</th>
+                                  
+                                    <th style="text-align: center">Edit</th>
+                                    <th style="text-align: center">ISACTIVE</th>
+
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-----------------------------------------------------------for dialog box-------------------------------------------------------------------------------------------------------------------------->
+
+        <div id="myModal" class="modal fade" role="dialog" tabindex="-1" aria-labelledby="licenseModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+
+                <!-- Modal content-->
+                <div class="modal-content ">
+                    <div class="modal-header text-center">
+                        <!-- Center the heading -->
+                        <button type="button" class="close" data-dismiss="modal" style="position: absolute; right: 15px; top: 15px;">×</button> <!-- Move close button to the right corner -->
+                        <h4 class="modal-title">MasterForm Registration</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="form-group">
+                                    <label>Country<span style="color:red">*</span></label>
+                                    @Html.DropDownListFor(model => model.dstCountryId, Model.dstCountryList, "Select a Country", new { @class = "form-control", @required = "required", id = "Country" })
+                                    @Html.HiddenFor(model => model.dstCountryName, new { id = "CountryId" }) <!-- Add a hidden field for country ID -->
+                                    @Html.ValidationMessageFor(model => model.dstCountryName, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="form-group">
+                                    <label>State<span style="color:red">*</span></label>
+                                    @Html.DropDownListFor(model => model.dstStateId, Model.dstStateList, "Select a State", new { @class = "form-control", @required = "required", id = "state" })
+                                    @Html.HiddenFor(model => model.dstStateId, new { id = "StateId" }) <!-- Add a hidden field for State ID -->
+                                    @Html.ValidationMessageFor(model => model.dstStateName, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="form-group">
+                                    <label>Zone<span style="color:red">*</span></label>
+                                    @Html.DropDownListFor(model => model.dstZoneId, Model.dstZoneList, "Select a Zone", new { @class = "form-control", @required = "required", id = "zone" })
+                                    @Html.HiddenFor(model => model.dstZoneId, new { id = "ZoneId" }) <!-- Add a hidden field for Zone ID -->
+                                    @Html.ValidationMessageFor(model => model.dstZoneName, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="form-group">
+                                    <label>District<span style="color:red">*</span></label>
+                                    @Html.EditorFor(model => model.dstName, new { htmlAttributes = new { @class = "form-control  ", id = "district" } })
+                                    @Html.HiddenFor(model => model.dstId, new { id = "DistrictId" })
+                                    @Html.ValidationMessageFor(model => model.dstName, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary" id="submit" value="Save"></button>
+                        @* <button type="button" class="btn btn-primary cancel" data-dismiss="modal">Close</button> *@
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+
+
+    @if (Model.ViewEditStatus == "E")
+    {
+
+        <script type="text/javascript">
+            $(window).load(function () {
+                $('#myModal').modal('show');
+                $('#Country').attr("disabled", true);
+                $('#state').attr("disabled", true);
+                // $('#zone').attr("disabled", true);
+                $("#submit").show();
+            });
+        </script>
+    }
+    @if (Model.ViewEditStatus == "V")
+    {
+
+        <script type="text/javascript">
+            $(window).load(function () {
+                $('#myModal').modal('show');
+                $('#Country').attr("disabled", true);
+                $('#state').attr("disabled", true);
+                //$('#zone').attr("disabled", true);
+                $("#submit").hide();
+            });
+        </script>
+    }
+    @if (Model.response == 1)
+    {
+        <script type="text/javascript">
+            $(document).ready(function () {
+                swal({
+                    title: '',
+                    text: "Inserted Successfully",
+                    type: "success"
+                }).then(function () {
+                    window.location.href = "../MasterDistrict/District"
+                });
+            });
+        </script>
+    }
+
+    @if (Model.response == 2)
+    {
+        <script type="text/javascript">
+            $(document).ready(function () {
+                swal({
+                    title: '',
+                    text: "updated Successfully",
+                    type: "success"
+                }).then(function () {
+                    window.location.href = "../MasterDistrict/District"
+                });
+            });
+        </script>
+    }
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+
+            $("#newbutton").click(function () {
+                $("#myModal").modal("show");
+                $("#Country").val("");
+                $("#state").val("");
+                $("#zone").val("");
+                $("#district").val("");
+                $("#submit").show();
+                $("#submit").text('Submit');
+                $('#state').attr("disabled", false);
+                $('#Country').attr("disabled", false);
+            });
+            $(".close").click(function () {
+                $("#myModal").modal("hide");
+            });
+
+            $(".cancel").click(function () {
+                $("#myModal").modal("hide");
+            });
+            $('#grdWorkFlowView').DataTable({
+
+                "ajax": {
+                    "url": "../MasterDistrict/GetMasterDetail",
+                    "type": "POST",
+                    "datatype": "json",
+
+                },
+                "columns": [
+                    { "data": null, "defaultContent": "", "orderable": false, "class": "dt-center" },
+                    { "data": "dstCountryName", "autoWidth": true },
+                    { "data": "dstStateName", "autoWidth": true },
+                    { "data": "dstZoneName", "autoWidth": true, },
+                    { "data": "dstName", "autoWidth": true },
+                    { "data": "dstId", "autoWidth": true, "visible": false },
+                    { "data": "dstCountryId", "autoWidth": true, "visible": false },
+                    { "data": "dstStateId", "autoWidth": true, "visible": false },
+                    { "data": "dstZoneId", "autoWidth": true, "visible": false },
+                   
+
+                    {
+                        "data": "dstId", "autoWidth": true, "sortable": false, "render": function (data, type, row) {
+                            return '<a title="Click here to Edit" href="javascript:editDetailsId(\'' + row.dstId + '\',\'' + row.dstCountryId + '\',\'' + row.dstStateId + '\',\'' + row.dstZoneId + '\',\'' + row.dstName + '\')" ><i class="fa fa-edit" style="font - size: 16px"></i></a>' + '&nbsp' + '&nbsp' +
+                                '<a title="Click here to View" href="javascript:getDetailsId(\'' + row.dstId + '\',\'' + row.dstCountryId + '\',\'' + row.dstStateId + '\',\'' + row.dstZoneId + '\',\'' + row.dstName + '\')" ><i class="fa fa-eye"></i></a>';
+                        }
+                    },
+                    {
+                    //new added
+                        "data": "flag", "autoWidth": true, "class": "dt-center", "sortable": false, "render": function (data, type, row) {
+                            if (data == 1) {
+                                return '<a style="color: green;" href="javascript:activeDeactive(\'' + row.dstId + '\',\'1\' )" title="Active"><i class="fa fa-circle"></a>';
+                            }
+                            else {
+                                return '<a style="color: red;"href="javascript:activeDeactive(\'' + row.dstId + '\',\'0\' )" title="InActive"><i class="fa fa-circle"></a>';
+                            }
+                        }
+                    },
+
+                ],
+                "columnDefs": [
+                    {
+                        "targets": 0, // Target the first column (Serial Number)
+                        "data": null,
+                        "render": function (data, type, row, meta) {
+                            // Use meta.row to get the current row index and add 1 to start from 1
+                            return meta.row + 1;
+                        }
+                    }
+                ]
+
+            });
+
+            // new script
+
+            $("#Country").change(function () {
+                debugger;
+
+                // Get the selected country ID
+                var selectedCountryId = $(this).val();
+
+                // Make an AJAX call to fetch states based on the selected country
+                $.ajax({
+                    url: '@Url.Action("GetStateByCountry", "MasterDistrict")', // Replace MasterDistrict with your actual controller name
+                    type: 'GET',
+                    data: { CountryID: selectedCountryId },
+                    dataType: 'json',
+                    success: function (data) {
+                        // Clear existing state options
+                        $("#state").empty();
+
+                        // // Add the default "Select a State" option    $("#state").html(""); // clear before appending new list
+                        var s = '';
+                        len = data.length;
+
+                        //s = "<option value='0'>Select </option>";
+                        for (var i = 0; i < len; i++) {
+                            s += "<option value='" + data[i]["value"] + "'>" + data[i]["text"] + "</option>";
+                        }
+                        $('#state').html(s).trigger("chosen:updated");
+
+
+                    },
+                    error: function () {
+                        // Handle error here
+                        console.log('Error fetching states.');
+                    }
+                });
+            });
+
+            // Attach an event handler to the Zone dropdown change event
+            $("#state").change(function () {
+                debugger;
+                // Get the selected country ID
+                var selectedStateId = $(this).val();
+
+                // Make an AJAX call to fetch states based on the selected country
+                $.ajax({
+                    url: '@Url.Action("GetZoneByState", "MasterDistrict")', // Replace MasterDistrict with your actual controller name
+                    type: 'POST',
+                    data: { DstStateId: selectedStateId },
+                    dataType: 'json',
+                    success: function (data) {
+                        // Clear existing state options
+                        $("#zone").empty();
+
+                        // // Add the default "Select a State" option    $("#state").html(""); // clear before appending new list
+                        var s = '';
+                        len = data.length;
+
+                        //s = "<option value='0'>Select </option>";
+                        for (var i = 0; i < len; i++) {
+                            s += "<option value='" + data[i]["value"] + "'>" + data[i]["text"] + "</option>";
+                        }
+                        $('#zone').html(s).trigger("chosen:updated");
+
+                    },
+                    error: function () {
+                        // Handle error here
+                        console.log('Error fetching states.');
+                    }
+                });
+
+                //For Reset Button
+                $("#resetButton").click(function () {
+                    // Reset the form by setting all dropdowns and textboxes to their initial values
+                    $("#Country").val(""); // Clear selected country
+                    $("#CountryId").val(""); // Clear hidden country ID
+                    $("#state").val(""); // Clear selected state
+                    $("#StateId").val(""); // Clear hidden state ID
+                    $("#zone").val(""); // Clear selected zone
+                    $("#ZoneId").val(""); // Clear hidden zone ID
+                    $("#district").val(""); // Clear the district textbox
+                });
+            });
+
+
+            $("#close").click(function () {
+
+                window.location.href = "../MasterDistrict/District"
+            });
+
+            $("#district").change(function () {
+                var x = $(this).val();
+                if (x.length > 10) {
+                    alert("length is out of range");
+                }
+                if (x[0] == " ") {
+                    alert("you can't start districtname with space ")
+                }
+            });
+
+            if ($("#hdnStateId").val() != 0) {
+                $("#submit").text('Update');
+            }
+            else {
+                $("#submit").text('Submit');
+            }
+            $("#updatebutton").click(function () {
+                document.location.href = "../MasterDistrict/District";
+            });
+        });
+
+
+
+        function editDetailsId(dstId, dstCountryId, dstStateId, dstZoneId, dstName) {
+            debugger;
+            $.ajax({
+                // url: "../MasterDistrict/getStateandZone",
+                url: '@Url.Action("getStateandZone", "MasterDistrict")',
+                type: 'POST',
+                data: { DistId: dstId, Status: 'E' },
+                dataType: 'json',
+                success: function (data) {
+                    document.location.href = "../MasterDistrict/District";
+                },
+                error: function () {
+                    // Handle error here
+                    console.log('Error fetching states.');
+                }
+            });
+            // $('#Country').val(dstCountryId);
+            // //$('#state').val(dstStateId);
+            // $('#zone').val(dstZoneId);
+            // $('#district').val(dstName);
+            $("#submit").text('Update');
+            $('#country').attr("disabled", true);
+            $('#state').attr("disabled", false);
+            $("#submit").show();
+        }
+
+        function getDetailsId(dstId, dstCountryId, dstStateId, dstZoneId, dstName) {
+            debugger;
+            $.ajax({
+                // url: "../MasterDistrict/getStateandZone",
+                url: '@Url.Action("getStateandZone", "MasterDistrict")',
+                type: 'POST',
+                data: { DistId: dstId, Status: 'V' },
+                dataType: 'json',
+                success: function (data) {
+                    document.location.href = "../MasterDistrict/District";
+                    $("#submit").hide();
+                },
+                error: function () {
+                    // Handle error here
+                    console.log('Error fetching states.');
+                }
+            });
+
+            // $('#Country').val(dstCountryId);
+            // $('#state').val(dstStateId);
+            // $('#zone').val(dstZoneId);
+            // $('#district').val(dstName);
+
+            $('#country').attr("disabled", true);
+            $('#state').attr("disabled", false);
+            $('#zone').attr("disabled", false);
+            $("#submit").hide();
+
+        }
+        function activeDeactive(id, flag) {
+            alert(id);
+            if (flag == 1) {
+
+                Swal.fire({
+                    title: 'Are You Sure You Want to Deactivate',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Confirm',
+                    cancelButtonText: 'Cancel',
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            type: "POST",
+                            url: "../MasterDistrict/ISActive",
+                            data: { id: id, flag: flag },
+                            success: function (data) {
+                                window.location.href = "../MasterDistrict/District";
+                            },
+                            error: function (xhr, status, error) {
+                                alert("While your processing getting error...!!");
+                            }
+                        });
+                    }
+                });
+            } else if (flag != 1) {
+                Swal.fire({
+                    title: 'Are You Sure You Want to Activate',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Confirm',
+                    cancelButtonText: 'Cancel',
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            type: "POST",
+                            url: "../MasterDistrict/ISActive",
+                            data: { id: id, flag: flag},
+                            success: function (data) {
+                                window.location.href = "../MasterDistrict/District";
+                            },
+                            error: function (xhr, status, error) {
+                                alert("While your processing getting error...!!");
+                            }
+                        });
+                    }
+                });
+            }
+        }
+    </script>
+</body>
+</html>
